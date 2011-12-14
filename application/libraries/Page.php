@@ -23,15 +23,6 @@ class Page
 		$this->body_id    = "";
 		$this->base       = "";
 		$this->CI =& get_instance();
-		
-		//Define some constants for formatting
-		define('NL', "\n");
-		define('T1', "\t");
-		define('T2', T1 . T1);
-		define('T3', T2 . T1);
-		define('T4', T2 . T2);
-		define('T5', T3 . T2);
-		define('T6', T3 . T3);
 	}
 	
 	// --------------------------------------------------------------------------
@@ -63,7 +54,7 @@ class Page
 		//Predefine charset
 		$charset = "UTF-8";
 		
-		//If xhtml flag is false, set html4 header
+		//If xhtml flag is false, set html5 header
 		if ($xhtml == TRUE)
 		{
 			//Check that the user agent accepts application/xhtml+xml, or if it's the W3C Validator
@@ -138,7 +129,7 @@ class Page
 	 */
 	public function set_meta($meta)
 	{
-		$this->meta .= T1 . meta($meta) . NL;
+		$this->meta .= meta($meta);
 		return $this;
 	}
 	
@@ -191,7 +182,7 @@ class Page
 			'rel' => 'stylesheet',
 			'type' => 'text/css'
 		);
-		$this->css .= T1 . link_tag($link) . NL;
+		$this->css .= link_tag($link);
 		
 		return $this;
 	}
@@ -206,7 +197,7 @@ class Page
 	public function set_foot_js_group($group, $debug = FALSE)
 	{
 		$file = $this->CI->config->item('group_js_path') . $group;
-		$file .= ($debug == TRUE) ? "?debug=1" : "";
+		$file .= ($debug == TRUE) ? "/debug/1" : "";
 		$this->foot_js .= $this->script_tag($file, FALSE);
 		return $this;
 	}
@@ -295,7 +286,7 @@ class Page
 		if ($domain == FALSE)
 			$css_file = $name;
 		
-		$this->css_tags .= T1 . link_tag($name, "stylesheet", "text/css", "", $media) . NL;
+		$this->css_tags .= link_tag($name, "stylesheet", "text/css", "", $media);
 		
 		return $this;
 	}
@@ -341,7 +332,10 @@ class Page
 		$data = array();
 		
 		//Set Meta Tags
-		$this->meta   = ($html5 == TRUE) ? T1 . '<meta charset="utf-8" />' . NL . $this->meta : T1 . meta('content-type', 'text/html; charset=utf-8', 'equiv') . NL . $this->meta;
+		$this->meta   = ($html5 == TRUE) 
+			? '<meta charset="utf-8" />'. $this->meta 
+			: meta('content-type', 'text/html; charset=utf-8', 'equiv') . $this->meta;
+		
 		$data['meta'] = $this->meta;
 		
 		//Set CSS
@@ -388,8 +382,6 @@ class Page
 		//Output Header
 		$this->CI->load->view('header', $data);
 		
-		flush();
-		
 		return $this;
 	}
 	
@@ -427,7 +419,7 @@ class Page
 		if ($domain == FALSE)
 			$js_file = $js;
 		
-		$tag = T1 . '<script src="' . $js_file . '"></script>' . NL;
+		$tag = '<script src="' . $js_file . '"></script>';
 		
 		return $tag;
 	}
